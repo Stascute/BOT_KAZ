@@ -2,6 +2,9 @@ import telebot
 import gspread
 import datetime
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
+import os
+import json
+from oauth2client.service_account import ServiceAccountCredentials
 
 # Константы
 TELEGRAM_TOKEN = '7918191420:AAFC9r_p8zylOAr5U-jVQuOVwih-NIPg5_Y'
@@ -16,19 +19,14 @@ scope = [
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
 ]
-import json
-import os
-from oauth2client.service_account import ServiceAccountCredentials
 
-# Читаем JSON из переменной окружения
-google_credentials = os.getenv("GOOGLE_CREDENTIALS")
-if google_credentials is None:
-    raise ValueError("GOOGLE_CREDENTIALS не найдены в переменных окружения")
+key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
 
-# Загружаем ключи из строки
-creds_dict = json.loads(google_credentials)
+if not key_json:
+    raise ValueError("Переменная окружения GOOGLE_APPLICATION_CREDENTIALS_JSON не установлена")
 
-# Создаём учетные данные
+creds_dict = json.loads(key_json)
+
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict)
 
 client = gspread.authorize(creds)
