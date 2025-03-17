@@ -9,8 +9,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 # Константы
 TELEGRAM_TOKEN = '7918191420:AAFC9r_p8zylOAr5U-jVQuOVwih-NIPg5_Y'
 SPREADSHEET_ID = '1aNzWinJl6ZJJ44vVPcmlGv7xA9MCx83AvuHhr_llayQ'
-FOTO = r"C:\Users\98519\PycharmProjects\PythonProject_bot\img.png"
-FOTO_KAZ = r"C:\Users\98519\PycharmProjects\PythonProject_bot\photo_KAZ.jpg"
+FOTO = r"img.png"
+FOTO_KAZ = r"photo_KAZ.jpg"
 
 # Авторизация Google Sheets
 scope = [
