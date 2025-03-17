@@ -1,6 +1,5 @@
 import telebot
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 import datetime
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
@@ -17,8 +16,21 @@ scope = [
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
 ]
-creds = ServiceAccountCredentials.from_json_keyfile_name(
-    r'C:\Users\98519\PycharmProjects\PythonProject_bot\credentials.json', scope)
+import json
+import os
+from oauth2client.service_account import ServiceAccountCredentials
+
+# Читаем JSON из переменной окружения
+google_credentials = os.getenv("GOOGLE_CREDENTIALS")
+if google_credentials is None:
+    raise ValueError("GOOGLE_CREDENTIALS не найдены в переменных окружения")
+
+# Загружаем ключи из строки
+creds_dict = json.loads(google_credentials)
+
+# Создаём учетные данные
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict)
+
 client = gspread.authorize(creds)
 sheet = client.open_by_key(SPREADSHEET_ID).sheet1
 
