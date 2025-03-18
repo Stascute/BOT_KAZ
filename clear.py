@@ -214,17 +214,36 @@ def save_answers(chat_id, day):
         sheet.append_row(row_data)
 
     bot.send_message(chat_id, "Спасибо за участие! Ваши ответы сохранены.")
+
+    # Сохранение пройденного отделения
+    if "пройденные" not in user_data[chat_id]:
+        user_data[chat_id]["пройденные"] = set()
+    user_data[chat_id]["пройденные"].add(day)
+
+    # Оставляем только непосещённые отделения
+    remaining_departments = [
+        "Отделение экспериментальной и теоретической физики",
+        "Отделение ядерной физики",
+        "Отделение физики твердого тела",
+        "Отделение радиофизики",
+        "Отделение прикладной математики",
+        "Отделение геофизики"
+    ]
+    remaining_departments = [d for i, d in enumerate(remaining_departments) if i not in user_data[chat_id]["пройденные"]]
+
+    # Если ещё есть отделения — снова предлагаем выбрать
+    if remaining_departments:
+        markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+        for department in remaining_departments:
+            markup.add(KeyboardButton(department))
+        bot.send_message(chat_id, "Выберите следующее отделение для прохождения квеста:", reply_markup=markup)
+        bot.register_next_step_handler_by_chat_id(chat_id, process_department_selection)
+    else:
+        bot.send_message(chat_id, "Вы прошли все отделения! 🎉")
+
+    # Удаляем состояние пользователя, чтобы начать заново
     del user_states[chat_id]
     del user_answers[chat_id]
-    process_group_ripit(chat_id)
-    del user_data[chat_id]
-
-def process_group_ripit(chat_id):
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("Пройти квест"))
-    markup.add(KeyboardButton("Узнать про КАЯ"))
-    bot.send_message(chat_id, "Спасибо! Теперь нажмите 'Пройти квест', чтобы начать:", reply_markup=markup)
-    user_states[chat_id] = "waiting_for_quest"
 
 
 bot.polling(none_stop=True)
