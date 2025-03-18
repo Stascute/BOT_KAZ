@@ -6,6 +6,10 @@ import os
 import json
 from oauth2client.service_account import ServiceAccountCredentials
 
+import telebot
+bot = telebot.TeleBot('7918191420:AAFC9r_p8zylOAr5U-jVQuOVwih-NIPg5_Y')
+bot.get_updates(offset=-1)
+
 # Константы
 TELEGRAM_TOKEN = '7918191420:AAFC9r_p8zylOAr5U-jVQuOVwih-NIPg5_Y'
 SPREADSHEET_ID = '1aNzWinJl6ZJJ44vVPcmlGv7xA9MCx83AvuHhr_llayQ'
@@ -20,14 +24,8 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
 
-if not key_json:
-    raise ValueError("Переменная окружения GOOGLE_APPLICATION_CREDENTIALS_JSON не установлена")
-
-creds_dict = json.loads(key_json)
-
-creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict)
+creds = ServiceAccountCredentials.from_json_keyfile_name(r'C:\Users\98519\PycharmProjects\PythonProject_bot\credentials.json', scope)
 
 client = gspread.authorize(creds)
 sheet = client.open_by_key(SPREADSHEET_ID).sheet1
@@ -40,7 +38,7 @@ user_data = {}
 
 QUESTIONS_BY_DAY = [
     ["Какими методами описывается фронт пламени?",
-     "Какая среда могла существовать на ранних стадиях эволюции вселенной?",
+     "Перечислите теории динамического хаоса",
      "На основе чего реализуется автоматическое обнаружение и отслеживание структур сверхзвукового потока?",
      "В чём смысл параметра q в q-статфизике?",
      "Где расположена экспериментальная база для исследования системы гемостаза?"],
@@ -66,8 +64,8 @@ QUESTIONS_BY_DAY = [
      "В чём причина появления и эволюции волновых структур?"],
     ["Какие методы получили фундаментальные результаты по теории мер?",
      "Какая концепция существенно расширяет возможности экспериментальных исследований?",
-     "В каком лазере разработан новый \"интеллектуальный\" метод и чем он лучше предыдущих?",
-     "Перечислите теории динамического хаоса.", "Какая лаборатория основана на использовании возобновляемых ресурсов?"],
+     "Большое поле приложения современных методов решения некорректных задач даёт ...",
+     " Какая галактика находится на картинке?", "В рамках какой научной группы организован семинар 'мат моделирования в прикладных задачах электродинамики'"],
     ["Какая проблема фундаментальной и прикладной сейсмологии является одной из центральных?",
      "Для чего необходимо изучать механизмы физических процессов, происходящих в залежах углеводородного сырья?",
      "Где можно познакомиться с процессами развития поверхностных и внутренних волн?",
@@ -77,8 +75,7 @@ QUESTIONS_BY_DAY = [
 
 # Названия столбцов
 HEADERS = ["ФИО", "Группа", "User ID"] + [f"{day} Вопрос {i + 1}" for day in
-                                          ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"] for i in
-                                          range(5)]
+                                          ["эксп и теор", "ядро", "твёрдое тело", "радио", "мат", "геофиз"] for i in range(5)]
 sheet.update([HEADERS])
 
 ######################################################################################################################
@@ -110,8 +107,44 @@ def process_group(message):
 def about_kaya(message):
     bot.send_photo(message.chat.id, open(FOTO_KAZ, 'rb'), "КАЯ — это комиссия профкома, которая занимается помощью первокурсникам в нахождении своего места во вселенной")
 
+
+
+
+
+
 @bot.message_handler(func=lambda message: user_states.get(message.chat.id) == "waiting_for_quest")
-def start_quest(message):
+def select_department(message):
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    departments = [
+        "Отделение экспериментальной и теоретической физики",
+        "Отделение ядерной физики",
+        "Отделение физики твердого тела",
+        "Отделение радиофизики",
+        "Отделение прикладной математики",
+        "Отделение геофизики"
+    ]
+    for department in departments:
+        markup.add(KeyboardButton(department))
+    bot.send_message(message.chat.id, "Выберите отделение:", reply_markup=markup)
+    bot.register_next_step_handler(message, process_department_selection)
+
+def process_department_selection(message):
+    departments = [
+        "Отделение экспериментальной и теоретической физики",
+        "Отделение ядерной физики",
+        "Отделение физики твердого тела",
+        "Отделение радиофизики",
+        "Отделение прикладной математики",
+        "Отделение геофизики"
+    ]
+    if message.text in departments:
+        user_data[message.chat.id] = departments.index(message.text)
+        ask_next_question(message.chat.id, departments.index(message.text), 0)
+    else:
+        bot.send_message(message.chat.id, "Пожалуйста, выберите одно из предложенных отделений.")
+        select_department(message)
+
+'''def start_quest(message):
     day = datetime.datetime.today().weekday()
     if day == 6:
         day = 3
@@ -119,7 +152,13 @@ def start_quest(message):
                                      str(message.chat.id)] + [""] * 30
     bot.send_message(message.chat.id,
                      f"Вы проходите квест за {['Понедельник', 'Вторник', 'Среду', 'Четверг', 'Пятницу', 'Субботу'][day]}.")
-    ask_next_question(message.chat.id, day, 0)
+    ask_next_question(message.chat.id, day, 0)'''
+
+
+
+
+
+
 
 
 def ask_next_question(chat_id, day, question_index):
@@ -128,6 +167,9 @@ def ask_next_question(chat_id, day, question_index):
         bot.send_message(chat_id, QUESTIONS_BY_DAY[day][question_index])
         question = QUESTIONS_BY_DAY[day][question_index]
         if question == "Функция распределения чего изображена на рисунке?":
+            with open(FOTO, 'rb') as img:
+                bot.send_photo(chat_id, img)
+        if question == "В рамках какой научной группы организован семинар 'мат моделирования в прикладных задачах электродинамики'":
             with open(FOTO, 'rb') as img:
                 bot.send_photo(chat_id, img)
     else:
