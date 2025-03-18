@@ -216,8 +216,15 @@ def save_answers(chat_id, day):
     bot.send_message(chat_id, "Спасибо за участие! Ваши ответы сохранены.")
     del user_states[chat_id]
     del user_answers[chat_id]
+    process_group_ripit(chat_id)
     del user_data[chat_id]
 
+def process_group_ripit(chat_id):
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("Пройти квест"))
+    markup.add(KeyboardButton("Узнать про КАЯ"))
+    bot.send_message(chat_id, "Спасибо! Теперь нажмите 'Пройти квест', чтобы начать:", reply_markup=markup)
+    user_states[chat_id] = "waiting_for_quest"
 
 
 bot.polling(none_stop=True)
