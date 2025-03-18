@@ -1,6 +1,5 @@
 import telebot
 import gspread
-import datetime
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import os
 import json
@@ -139,6 +138,7 @@ def process_department_selection(message):
         "Отделение прикладной математики",
         "Отделение геофизики"
     ]
+    user_answers[message.chat.id] = [user_data[message.chat.id]["ФИО"], user_data[message.chat.id]["Группа"],str(message.chat.id)] + [""] * 30
     if message.text in departments:
         user_data[message.chat.id] = departments.index(message.text)
         ask_next_question(message.chat.id, departments.index(message.text), 0)
