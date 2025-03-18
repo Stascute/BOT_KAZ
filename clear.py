@@ -6,10 +6,6 @@ import os
 import json
 from oauth2client.service_account import ServiceAccountCredentials
 
-import telebot
-bot = telebot.TeleBot('7918191420:AAFC9r_p8zylOAr5U-jVQuOVwih-NIPg5_Y')
-bot.get_updates(offset=-1)
-
 # Константы
 TELEGRAM_TOKEN = '7918191420:AAFC9r_p8zylOAr5U-jVQuOVwih-NIPg5_Y'
 SPREADSHEET_ID = '1aNzWinJl6ZJJ44vVPcmlGv7xA9MCx83AvuHhr_llayQ'
@@ -24,8 +20,14 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
+key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
 
-creds = ServiceAccountCredentials.from_json_keyfile_name(r'C:\Users\98519\PycharmProjects\PythonProject_bot\credentials.json', scope)
+if not key_json:
+    raise ValueError("Переменная окружения GOOGLE_APPLICATION_CREDENTIALS_JSON не установлена")
+
+creds_dict = json.loads(key_json)
+
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict)
 
 client = gspread.authorize(creds)
 sheet = client.open_by_key(SPREADSHEET_ID).sheet1
