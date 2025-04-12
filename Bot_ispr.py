@@ -19,15 +19,24 @@ scope = [
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
 ]
-
-key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+"""key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
 
 if not key_json:
     raise ValueError("Переменная окружения GOOGLE_APPLICATION_CREDENTIALS_JSON не установлена")
 
 creds_dict = json.loads(key_json)
 
-creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict)
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict)"""
+creds = ServiceAccountCredentials.from_json_keyfile_name(r'C:\Users\98519\PycharmProjects\PythonProject_bot\credentials.json', scope)
+client = gspread.authorize(creds)
+sheet = client.open_by_key(SPREADSHEET_ID).sheet1
+
+'''key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+
+if not key_json:
+    raise ValueError("Переменная окружения GOOGLE_APPLICATION_CREDENTIALS_JSON не установлена")
+
+creds_dict = json.loads(key_json)'''
 
 client = gspread.authorize(creds)
 sheet = client.open_by_key(SPREADSHEET_ID).sheet1
