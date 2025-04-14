@@ -85,7 +85,8 @@ HEADERS = ["ФИО", "Группа", "User ID"] + [f"{day} Вопрос {i + 1}"
 sheet.update([HEADERS])
 
 ######################################################################################################################
-
+bot.remove_webhook()
+bot.polling(none_stop=True)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -111,7 +112,7 @@ def process_group(message):
 
 @bot.message_handler(func=lambda message: message.text == "Узнать про КАЯ")
 def about_kaya(message):
-    bot.send_photo(message.chat.id, open(FOTO_KAZ, 'rb'), "В раздел о КАя можно это:Проект «Кафедры от А до Я» традиционно проводит ежесеместровую выставку кафедр Физического факультета в холле ЦФА.Команда организаторов делает все возможное, чтобы у студентов 1-2 курсов была возможность встретиться с представителями всех кафедр в одной точке пространства и времени.Наши соцсети, где мы регулярно публикуем информацию о встречах с кафедрами: VK: vk.com/ffkayaTG: t.me/adoyakaf")
+    bot.send_photo(message.chat.id, open(FOTO_KAZ, 'rb'), "Проект «Кафедры от А до Я» традиционно проводит ежесеместровую выставку кафедр Физического факультета в холле ЦФА.Команда организаторов делает все возможное, чтобы у студентов 1-2 курсов была возможность встретиться с представителями всех кафедр в одной точке пространства и времени.Наши соцсети, где мы регулярно публикуем информацию о встречах с кафедрами: VK: vk.com/ffkayaTG: t.me/adoyakaf")
 
 @bot.message_handler(func=lambda message: user_states.get(message.chat.id) == "waiting_for_quest")
 def select_department(message):
