@@ -6,7 +6,6 @@ import json
 from oauth2client.service_account import ServiceAccountCredentials
 from telebot.types import ReplyKeyboardRemove
 # Константы
-TELEGRAM_TOKEN = '7918191420:AAFC9r_p8zylOAr5U-jVQuOVwih-NIPg5_Y'
 SPREADSHEET_ID = '1aNzWinJl6ZJJ44vVPcmlGv7xA9MCx83AvuHhr_llayQ'
 FOTO = r"Photo_2_vopr.png"
 FOTO_KAZ = r"img_2.png"
@@ -20,6 +19,7 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
 
 if not key_json:
@@ -85,7 +85,7 @@ HEADERS = ["ФИО", "Группа", "User ID"] + [f"{day} Вопрос {i + 1}"
 sheet.update([HEADERS])
 
 ######################################################################################################################
-bot.set_webhook(url="botkaz-production.up.railway.app")
+#bot.set_webhook(url="botkaz-production.up.railway.app")
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, "Привет! Введи своё ФИО:")
