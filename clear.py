@@ -21,7 +21,8 @@ scope = [
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 key_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
-
+if not TELEGRAM_TOKEN:
+    raise ValueError("Переменная окружения TELEGRAM_TOKEN не установлена")
 if not key_json:
     raise ValueError("Переменная окружения GOOGLE_APPLICATION_CREDENTIALS_JSON не установлена")
 
