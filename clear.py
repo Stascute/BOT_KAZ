@@ -85,9 +85,7 @@ HEADERS = ["ФИО", "Группа", "User ID"] + [f"{day} Вопрос {i + 1}"
 sheet.update([HEADERS])
 
 ######################################################################################################################
-bot.remove_webhook()
-bot.polling(none_stop=True)
-
+#bot.set_webhook(url="")
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, "Привет! Введи своё ФИО:")
