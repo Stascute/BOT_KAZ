@@ -28,7 +28,7 @@ if not key_json:
 creds_dict = json.loads(key_json)
 
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict)"""
-creds = ServiceAccountCredentials.from_json_keyfile_name(r'credentials.json', scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name(r"credentials.json", scope)
 client = gspread.authorize(creds)
 sheet = client.open_by_key(SPREADSHEET_ID).sheet1
 
