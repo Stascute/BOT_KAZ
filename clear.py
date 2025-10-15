@@ -210,7 +210,7 @@ def save_answers(chat_id, day):
 
     # Если ещё есть отделения — снова предлагаем выбрать
 
-    if [dep[-1] for dep in departments] != ["✅","✅","✅","✅","✅","✅"]:
+    if [dep[-1] for dep in departments] == ["✅","✅","✅","✅","✅","✅"]:
         markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
         for department in departments:
             markup.add(KeyboardButton(department))
